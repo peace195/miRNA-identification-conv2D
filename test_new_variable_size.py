@@ -129,26 +129,3 @@ for epoch in range(N_EPOCH):
 WriteFile.close()
 torch.save(model.state_dict(), "./weights/test_new/%s_test_variable.pt" % TEST_SPECIES)
 #model.load_state_dict(torch.load("./weights/test_new/%s_test_variable.pt" % TEST_SPECIES))
-model.eval()
-with torch.no_grad():
-  predictions = []
-  Y_test = []
-  for seqs, labels in test_loader:
-    seqs = seqs.to(device)
-    labels = labels.to(device)
-    outputs = model(seqs)
-    predictions.extend(outputs.data)
-    Y_test.extend(labels)
-  predicted = F.softmax(torch.stack(predictions), dim=1).cpu().numpy()
-  predicted_positive = []
-  predicted_negative = []
-  for i in range(len(Y_test)):
-    predicted_positive.append(predicted[i][Y_test[i]])
-    predicted_negative.append(predicted[i][1 - Y_test[i]])
-  plt.figure()
-  plt.hist(predicted_positive, bins=100, histtype=u'step', color='black', label='Positive')
-  plt.hist(predicted_negative, bins=100, histtype=u'step', color='blue', label='Negative')
-  plt.xlabel("Prediction")
-  plt.ylabel("Frequency")
-  plt.legend(loc='upper right')
-  plt.savefig("./results/test_new/%s_test.png" % TEST_SPECIES)

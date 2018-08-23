@@ -277,6 +277,9 @@ class ConvNet_v7(nn.Module):
 
 
 class AlexNet(nn.Module):
+  """
+  reference: https://github.com/pytorch/vision/blob/master/torchvision/models/alexnet.py
+  """
   def __init__(self, num_classes=2):
     super(AlexNet, self).__init__()
     self.features = nn.Sequential(
@@ -316,16 +319,25 @@ model_urls = {
 }
 
 def alexnet(pretrained=False, **kwargs):
+  """AlexNet model architecture from the
+  `"One weird trick..." <https://arxiv.org/abs/1404.5997>`_ paper.
+
+  Args:
+    pretrained (bool): If True, returns a model pre-trained on ImageNet
+  """
+
   model = AlexNet(**kwargs)
   if pretrained:
     model.load_state_dict(model_zoo.load_url(model_urls['alexnet']))
   return model
 
+
+
+
 def conv3x3(in_planes, out_planes, stride=1):
   """3x3 convolution with padding"""
   return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
            padding=1, bias=False)
-
 
 class BasicBlock(nn.Module):
   expansion = 1
@@ -357,7 +369,6 @@ class BasicBlock(nn.Module):
     out = self.relu(out)
 
     return out
-
 
 class Bottleneck(nn.Module):
   expansion = 4
@@ -399,7 +410,9 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-
+  """
+  reference: https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
+  """
   def __init__(self, block, layers, num_classes=2):
     self.inplanes = 64
     super(ResNet, self).__init__()

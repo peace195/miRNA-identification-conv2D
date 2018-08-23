@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 import torch.utils.data as data
 from os.path import exists
 from os import makedirs, environ
-from Bio import SeqIO  ## fasta read
+from Bio import SeqIO  ##fasta read
 import torch.nn.functional as F
 import torch.nn as nn
 import math
@@ -15,11 +15,14 @@ import sys
 sys.path.append(environ['VIENNA_PATH'])
 import RNA
 
-MAX_LEN = 400 # maximum sequence length
+MAX_LEN = 400 #maximum sequence length
 CHANEL = 4
 
 
 def import_seq(filename):
+  """
+  reference: https://github.com/eleventh83/deepMiRGene/blob/master/reproduce/cv.py
+  """
   seqs = []
   for record in SeqIO.parse(filename, "fasta"):
     a_seq = str(record.seq)
@@ -28,6 +31,9 @@ def import_seq(filename):
 
 
 def seq2num(a_seq):
+  """
+  reference: https://github.com/eleventh83/deepMiRGene/blob/master/reproduce/cv.py
+  """
   ints_ = [0]*len(a_seq)
   for i, c in enumerate(a_seq.lower()):
     if c == 'c':
@@ -92,6 +98,9 @@ def encode(a_seq, a_str, energy, variable_size = False):
 
 
 def perfeval(predictions, Y_test, verbose=0):
+  """
+  reference: https://github.com/eleventh83/deepMiRGene/blob/master/reproduce/cv.py
+  """
   class_label = np.uint8(np.argmax(predictions, axis=1))
   R = np.asarray(Y_test)
   R_one_hot = np.array([ [ float(i == label) for i in range(2) ] for label in R ])
@@ -118,6 +127,9 @@ def perfeval(predictions, Y_test, verbose=0):
 
 
 def wrtrst(filehandle, rst, nfold=0, nepoch=0):
+  """
+  reference: https://github.com/eleventh83/deepMiRGene/blob/master/reproduce/cv.py
+  """
   filehandle.write(str(nfold+1)+" "+str(nepoch+1)+" ")
   filehandle.write("SE: %s SP: %s F-score: %s PPV: %s g-mean: %s AUROC: %s AUPR: %s ACC: %s\n" %
   ("{:.3f}".format(rst[0]),

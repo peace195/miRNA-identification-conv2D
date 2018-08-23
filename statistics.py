@@ -7,10 +7,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-MAX_LEN = 400 # maximum sequence length
-CHANEL = 4
-
-
+#statistics of dataset
 def import_seq(filename):
   seqs = []
   for record in SeqIO.parse(filename, "fasta"):
@@ -23,7 +20,6 @@ classes = ["pos", "neg"]
 seq_len = []
 
 for _species in SPECIES:
-  
   for category in classes:
     seqs = import_seq("./dataset/sequences/%s_%s.fa" % (_species,category))
     for seq in seqs:
