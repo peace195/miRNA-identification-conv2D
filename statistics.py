@@ -25,7 +25,9 @@ for _species in SPECIES:
     for seq in seqs:
       seq_len.append(len(seq))
 
+print(np.mean(seq_len))
 plt.figure()
+plt.yscale('log')
 plt.hist(seq_len, bins=50)
 plt.axvline(np.mean(seq_len), color='k', linewidth=1)
 plt.xlabel("Sequence length")

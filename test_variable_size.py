@@ -66,7 +66,6 @@ for _species in SPECIES:
   rst = []
   loss_list = []
   accuracy_list = []
-  time = []
   model = ConvNet_v6().to(device)
   model = model.double()
   weights = [4.0, 1.0]
@@ -81,7 +80,6 @@ for _species in SPECIES:
   test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=1, num_workers=8, shuffle=False)
   curr_lr = LEARNING_RATE
   for epoch in range(N_EPOCH):
-    start = timeit.default_timer()
     print(epoch)
     correct = 0
     total = 0
@@ -101,27 +99,24 @@ for _species in SPECIES:
       
       loss_total += loss.item()
 
-    stop = timeit.default_timer()
-    time.append(stop - start)
-    print(time)
     loss_list.append(loss_total / total)
     accuracy_list.append(float(correct) / total)
               
     _, ax1 = plt.subplots()
     ax2 = ax1.twinx()
-    lns1 = ax1.plot(loss_list, label='loss')
-    lns2 = ax2.plot(accuracy_list, 'r', label='accuracy')
-    ax1.set_xlabel("epoch")
-    ax1.set_ylabel("training loss")
-    ax2.set_ylabel("training accuracy")
-    ax1.set_title("training accuracy and loss")
+    lns1 = ax1.plot(loss_list, label='Loss')
+    lns2 = ax2.plot(accuracy_list, 'r', label='Accuracy')
+    ax1.set_xlabel("Epoch")
+    ax1.set_ylabel("Training loss")
+    ax2.set_ylabel("Training accuracy")
+    ax1.set_title("Training accuracy and loss")
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
     # added these three lines
     lns = lns1+lns2
     labs = [l.get_label() for l in lns]
     ax1.legend(lns, labs, loc=10)
 
-    plt.savefig("./results/test/accuracy_loss_%s.png" %_species, dpi=150)
+    plt.savefig("./results/test/accuracy_loss_variable_%s.png" %_species, dpi=150)
     plt.close()
 
     # Test the model
@@ -138,7 +133,6 @@ for _species in SPECIES:
       rst = perfeval(F.softmax(torch.stack(predictions), dim=1).cpu().numpy(), Y_test, verbose=1)
       wrtrst(WriteFile, rst, 0, epoch)
   
-  print(time)    
   WriteFile.close()
   torch.save(model.state_dict(), "./weights/test/%s_test_variable.pt" % _species)
   #model.load_state_dict(torch.load("./weights/test/%s_test_variable.pt" % _species))

@@ -275,7 +275,6 @@ class ConvNet_v7(nn.Module):
     out = self.fc(out)
     return out
 
-
 class AlexNet(nn.Module):
   """
   reference: https://github.com/pytorch/vision/blob/master/torchvision/models/alexnet.py

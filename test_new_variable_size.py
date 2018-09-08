@@ -104,12 +104,12 @@ for epoch in range(N_EPOCH):
   ax2 = ax1.twinx()
   ax1.plot(loss_list)
   ax2.plot(accuracy_list, 'r')
-  ax1.set_xlabel("epoch")
-  ax1.set_ylabel("training loss")
-  ax2.set_ylabel("training accuracy")
-  ax1.set_title("training accuracy and loss")
+  ax1.set_xlabel("Epoch")
+  ax1.set_ylabel("Training loss")
+  ax2.set_ylabel("Training accuracy")
+  ax1.set_title("Training accuracy and loss")
   ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
-  plt.savefig("./results/test_new/accuracy_loss_%s.png" % TEST_SPECIES, dpi=150)
+  plt.savefig("./results/test_new/accuracy_loss_variable_%s.png" % TEST_SPECIES, dpi=150)
   plt.close()
 
   # Test the model

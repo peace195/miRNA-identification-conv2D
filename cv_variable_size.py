@@ -3,7 +3,6 @@ matplotlib.use('Agg')
 import numpy as np
 from utils import *
 from ConvNet import *
-from ResNet import *
 from sklearn import metrics
 import torch 
 import torchvision
@@ -112,19 +111,19 @@ for _species in SPECIES:
 
         wrtrst(WriteFile, perfeval(F.softmax(torch.stack(predictions), dim=1).cpu().numpy(), Y_test, verbose=1), fold, epoch)
       
-      loss_list.append(loss_total)
+      loss_list.append(loss_total / total)
       accuracy_list.append(float(correct) / total)
                  
       _, ax1 = plt.subplots()
       ax2 = ax1.twinx()
       ax1.plot(loss_list)
       ax2.plot(accuracy_list, 'r')
-      ax1.set_xlabel("epoch")
-      ax1.set_ylabel("validation loss")
-      ax2.set_ylabel("validation accuracy")
-      ax1.set_title("validation accuracy and loss")
+      ax1.set_xlabel("Epoch")
+      ax1.set_ylabel("Validation loss")
+      ax2.set_ylabel("Validation accuracy")
+      ax1.set_title("Validation accuracy and loss")
       ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
-      plt.savefig("./results/cv/accuracy_loss_%s_%s.png" %(_species, fold), dpi=300)
+      plt.savefig("./results/cv/accuracy_loss_variable_%s_%s.png" %(_species, fold), dpi=300)
       plt.close()
 
     torch.save(model.state_dict(), "./weights/cv/%s_f%d_variable.pt" % (_species,fold+1))
@@ -144,4 +143,3 @@ for _species in SPECIES:
   print(rst_avg)
   wrtrst(WriteFile, rst_avg, 0, 0)
   WriteFile.close()
-
