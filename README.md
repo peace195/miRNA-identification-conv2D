@@ -32,4 +32,4 @@ test_variable_size.py| Train and test in `human` and `cross-species` dataset wit
 test_new_variable_size.py| Train and test in `new` dataset with variable-sized inputs ConvNet architecture
 statistics.py| Statistics of dataset
 utils.py| Read sequences, encode sequences and measurement function
-ConvNet.py| Some ConvNet architectures
+ConvNet.py| Some ConvNet architectures such as Alexnet, Resnet, etc.
