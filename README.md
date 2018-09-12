@@ -4,7 +4,7 @@ Code for project "Overview of Biomedicine" under lab course "Deep Learning for C
 
 Our paper: Binh Thanh Do, Vladimir Golkov, Goktug Erce Gurel, and Daniel Cremers, "Precursor microRNA Identification Using Deep Convolutional Neural Networks"
 
-* biorxiv: 
+* biorxiv: https://www.biorxiv.org/content/early/2018/09/11/414656
 
 ## Setting up the Environmental Variable
 
