@@ -2,7 +2,7 @@
 
 Code for project "Overview of Biomedicine" under lab course "Deep Learning for Computer Vision and Biomedicine" - Technical University of Munich, Germany. Depends on **Python 3, numpy, pytorch, scikit-learn, Bio, RNA, matplotlib**.
 
-Our paper: Binh Thanh Do, Vladimir Golkov, Goktug Erce Gurel, and Daniel Cremers, "Precursor microRNA Identification Using Deep Convolutional Neural Networks"
+Our paper: Binh Thanh Do, Vladimir Golkov, Göktuğ Erce Gürel, and Daniel Cremers, "Precursor microRNA Identification Using Deep Convolutional Neural Networks"
 
 * biorxiv: https://www.biorxiv.org/content/early/2018/09/11/414656
 
