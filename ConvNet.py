@@ -1,12 +1,6 @@
-import torch 
-import torchvision
-import torchvision.transforms as transforms
-import torch.utils.data as data
-from os.path import exists
-from os import makedirs
+import torch
 import torch.nn.functional as F
 import torch.nn as nn
-import math
 import torch.utils.model_zoo as model_zoo
 
 
@@ -26,7 +20,7 @@ class ConvNet(nn.Module):
       nn.ReLU(inplace=True),
       nn.MaxPool2d(kernel_size=2, stride=2))
     self.fc = nn.Sequential(
-      nn.Linear(6*6*64, 256),
+      nn.Linear(6 * 6 * 64, 256),
       nn.Sigmoid(),
       nn.Linear(256, num_classes))
 
@@ -53,7 +47,7 @@ class ConvNet_v1(nn.Module):
       nn.ReLU(inplace=True),
       nn.MaxPool2d(kernel_size=2, stride=2))
     self.fc = nn.Sequential(
-      nn.Linear(4*4*64, 256),
+      nn.Linear(4 * 4 * 64, 256),
       nn.Sigmoid(),
       nn.Linear(256, num_classes))
 
@@ -86,7 +80,7 @@ class ConvNet_v2(nn.Module):
       nn.ReLU(inplace=True),
       nn.MaxPool2d(kernel_size=2, stride=2))
     self.fc = nn.Sequential(
-      nn.Linear(10*10*48, 1024),
+      nn.Linear(10 * 10 * 48, 1024),
       nn.Sigmoid(),
       nn.Linear(1024, 256),
       nn.Sigmoid(),
@@ -118,7 +112,7 @@ class ConvNet_v3(nn.Module):
       nn.ReLU(inplace=True))
     self.global_pooling = nn.AdaptiveMaxPool2d(7)
     self.fc = nn.Sequential(
-      nn.Linear(7*7*128, 256),
+      nn.Linear(7 * 7 * 128, 256),
       nn.Sigmoid(),
       nn.Linear(256, num_classes))
 
@@ -152,7 +146,7 @@ class ConvNet_v4(nn.Module):
       nn.ReLU(inplace=True),
       nn.AdaptiveMaxPool2d(7))
     self.fc = nn.Sequential(
-      nn.Linear(7*7*128, 256),
+      nn.Linear(7 * 7 * 128, 256),
       nn.Sigmoid(),
       nn.Linear(256, num_classes))
 
@@ -161,7 +155,9 @@ class ConvNet_v4(nn.Module):
     out = self.layer2(out)
     broadcast_h = F.adaptive_max_pool1d(out.squeeze(), 1)
     broadcast_v = F.adaptive_max_pool1d(out.squeeze().permute(0, 2, 1), 1)
-    out = torch.unsqueeze(torch.cat((out.squeeze(), broadcast_h.repeat(1, 1, out.size(3)), broadcast_v.permute(0, 2, 1).repeat(1, out.size(3), 1)), 0), 0)
+    out = torch.unsqueeze(torch.cat(
+      (out.squeeze(), broadcast_h.repeat(1, 1, out.size(3)), broadcast_v.permute(0, 2, 1).repeat(1, out.size(3), 1)),
+      0), 0)
     out = self.layer3(out)
     out = self.layer4(out)
     out = out.reshape(out.size(0), -1)
@@ -190,7 +186,7 @@ class ConvNet_v5(nn.Module):
       nn.ReLU(inplace=True))
     self.layer5 = nn.AdaptiveMaxPool2d(2)
     self.fc = nn.Sequential(
-      nn.Linear(2*2*432, 256),
+      nn.Linear(2 * 2 * 432, 256),
       nn.Sigmoid(),
       nn.Linear(256, num_classes))
 
@@ -198,20 +194,27 @@ class ConvNet_v5(nn.Module):
     out = self.layer1(x)
     broadcast_h = F.adaptive_max_pool1d(out.squeeze(), 1)
     broadcast_v = F.adaptive_max_pool1d(out.squeeze().permute(0, 2, 1), 1)
-    out = torch.unsqueeze(torch.cat((out.squeeze(), broadcast_h.repeat(1, 1, out.size(3)), broadcast_v.permute(0, 2, 1).repeat(1, out.size(3), 1)), 0), 0)
+    out = torch.unsqueeze(torch.cat(
+      (out.squeeze(), broadcast_h.repeat(1, 1, out.size(3)), broadcast_v.permute(0, 2, 1).repeat(1, out.size(3), 1)),
+      0), 0)
     out = self.layer2(out)
     broadcast_h = F.adaptive_max_pool1d(out.squeeze(), 1)
     broadcast_v = F.adaptive_max_pool1d(out.squeeze().permute(0, 2, 1), 1)
-    out = torch.unsqueeze(torch.cat((out.squeeze(), broadcast_h.repeat(1, 1, out.size(3)), broadcast_v.permute(0, 2, 1).repeat(1, out.size(3), 1)), 0), 0)
+    out = torch.unsqueeze(torch.cat(
+      (out.squeeze(), broadcast_h.repeat(1, 1, out.size(3)), broadcast_v.permute(0, 2, 1).repeat(1, out.size(3), 1)),
+      0), 0)
     out = self.layer3(out)
     broadcast_h = F.adaptive_max_pool1d(out.squeeze(), 1)
     broadcast_v = F.adaptive_max_pool1d(out.squeeze().permute(0, 2, 1), 1)
-    out = torch.unsqueeze(torch.cat((out.squeeze(), broadcast_h.repeat(1, 1, out.size(3)), broadcast_v.permute(0, 2, 1).repeat(1, out.size(3), 1)), 0), 0)
+    out = torch.unsqueeze(torch.cat(
+      (out.squeeze(), broadcast_h.repeat(1, 1, out.size(3)), broadcast_v.permute(0, 2, 1).repeat(1, out.size(3), 1)),
+      0), 0)
     out = self.layer4(out)
     out = self.layer5(out)
     out = out.reshape(out.size(0), -1)
     out = self.fc(out)
     return out
+
 
 class ConvNet_v6(nn.Module):
   def __init__(self, num_classes=2):
@@ -229,7 +232,7 @@ class ConvNet_v6(nn.Module):
       nn.ReLU(inplace=True))
     self.layer4 = nn.AdaptiveAvgPool2d(4)
     self.fc = nn.Sequential(
-      nn.Linear(4*4*64, 256),
+      nn.Linear(4 * 4 * 64, 256),
       nn.Sigmoid(),
       nn.Linear(256, num_classes))
 
@@ -241,6 +244,7 @@ class ConvNet_v6(nn.Module):
     out = out.reshape(out.size(0), -1)
     out = self.fc(out)
     return out
+
 
 class ConvNet_v7(nn.Module):
   def __init__(self, num_classes=2):
@@ -260,7 +264,7 @@ class ConvNet_v7(nn.Module):
     self.layer5 = nn.AdaptiveAvgPool2d(2)
     self.layer6 = nn.AdaptiveAvgPool2d(4)
     self.fc = nn.Sequential(
-      nn.Linear((1*1+2*2+4*4)*64, 256),
+      nn.Linear((1 * 1 + 2 * 2 + 4 * 4) * 64, 256),
       nn.Sigmoid(),
       nn.Linear(256, num_classes))
 
@@ -271,14 +275,16 @@ class ConvNet_v7(nn.Module):
     out1 = self.layer4(out)
     out2 = self.layer5(out)
     out3 = self.layer6(out)
-    out = torch.cat((out1.reshape(out1.size(0), -1), out2.reshape(out2.size(0), -1), out3.reshape(out3.size(0), -1)), 1) 
+    out = torch.cat((out1.reshape(out1.size(0), -1), out2.reshape(out2.size(0), -1), out3.reshape(out3.size(0), -1)), 1)
     out = self.fc(out)
     return out
+
 
 class AlexNet(nn.Module):
   """
   reference: https://github.com/pytorch/vision/blob/master/torchvision/models/alexnet.py
   """
+
   def __init__(self, num_classes=2):
     super(AlexNet, self).__init__()
     self.features = nn.Sequential(
@@ -317,6 +323,7 @@ model_urls = {
   'alexnet': 'https://download.pytorch.org/models/alexnet-owt-4df8aa71.pth',
 }
 
+
 def alexnet(pretrained=False, **kwargs):
   """AlexNet model architecture from the
   `"One weird trick..." <https://arxiv.org/abs/1404.5997>`_ paper.
@@ -331,12 +338,11 @@ def alexnet(pretrained=False, **kwargs):
   return model
 
 
-
-
 def conv3x3(in_planes, out_planes, stride=1):
   """3x3 convolution with padding"""
   return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
-           padding=1, bias=False)
+                   padding=1, bias=False)
+
 
 class BasicBlock(nn.Module):
   expansion = 1
@@ -369,6 +375,7 @@ class BasicBlock(nn.Module):
 
     return out
 
+
 class Bottleneck(nn.Module):
   expansion = 4
 
@@ -377,7 +384,7 @@ class Bottleneck(nn.Module):
     self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
     self.bn1 = nn.BatchNorm2d(planes)
     self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
-                 padding=1, bias=False)
+                           padding=1, bias=False)
     self.bn2 = nn.BatchNorm2d(planes)
     self.conv3 = nn.Conv2d(planes, planes * self.expansion, kernel_size=1, bias=False)
     self.bn3 = nn.BatchNorm2d(planes * self.expansion)
@@ -412,11 +419,12 @@ class ResNet(nn.Module):
   """
   reference: https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
   """
+
   def __init__(self, block, layers, num_classes=2):
     self.inplanes = 64
     super(ResNet, self).__init__()
     self.conv1 = nn.Conv2d(9, 64, kernel_size=7, stride=2, padding=3,
-                 bias=False)
+                           bias=False)
     self.bn1 = nn.BatchNorm2d(64)
     self.relu = nn.ReLU(inplace=True)
     self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -439,7 +447,7 @@ class ResNet(nn.Module):
     if stride != 1 or self.inplanes != planes * block.expansion:
       downsample = nn.Sequential(
         nn.Conv2d(self.inplanes, planes * block.expansion,
-              kernel_size=1, stride=stride, bias=False),
+                  kernel_size=1, stride=stride, bias=False),
         nn.BatchNorm2d(planes * block.expansion),
       )
 

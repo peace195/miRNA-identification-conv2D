@@ -1,21 +1,16 @@
 import matplotlib
+
 matplotlib.use('Agg')
-import numpy as np
 from utils import *
 from ConvNet import *
-from sklearn import metrics
-import torch 
-import torchvision
-import torchvision.transforms as transforms
+import torch
 import torch.utils.data as data
 from os.path import exists
 from os import makedirs, environ
-from Bio import SeqIO  ## fasta read
 import torch.nn.functional as F
 import torch.nn as nn
-import math
-import torch.utils.model_zoo as model_zoo
 import sys
+
 sys.path.append(environ['VIENNA_PATH'])
 import RNA
 import matplotlib.pyplot as plt
@@ -32,7 +27,6 @@ if not exists("./weights/"):
 
 if not exists("./weights/cv"):
   makedirs("./weights/cv/")
-
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 K_FOLD = 5
@@ -52,13 +46,15 @@ class DriveData(data.Dataset):
     self.__ys = [0] * len(X_pos) + [1] * len(X_neg)
 
   def __getitem__(self, index):
-    return (encode(self.__xs[index], RNA.fold(self.__xs[index])[0], RNA.fold(self.__xs[index])[1], True), self.__ys[index])
+    return (
+    encode(self.__xs[index], RNA.fold(self.__xs[index])[0], RNA.fold(self.__xs[index])[1], True), self.__ys[index])
 
   def __len__(self):
     return len(self.__xs)
 
+
 for _species in SPECIES:
-  WriteFile = open("./results/cv/%s_cv_variable.rst" % _species ,"w")
+  WriteFile = open("./results/cv/%s_cv_variable.rst" % _species, "w")
   rst = []
   for fold in range(K_FOLD):
     loss_list = []
@@ -68,12 +64,12 @@ for _species in SPECIES:
     weights = [4.0, 1.0]
     class_weights = torch.DoubleTensor(weights).to(device)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
-    #criterion = nn.CrossEntropyLoss()
+    # criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adagrad(model.parameters(), lr=LEARNING_RATE)
-    train_dataset = DriveData("./dataset/cv/%s/train/%s_pos_train_f%d.fa" % (_species,_species,fold+1),
-      "./dataset/cv/%s/train/%s_neg_train_f%d.fa" % (_species,_species,fold+1))
-    test_dataset = DriveData("./dataset/cv/%s/val/%s_pos_val_f%d.fa" % (_species,_species,fold+1),
-      "./dataset/cv/%s/val/%s_neg_val_f%d.fa" % (_species,_species,fold+1))
+    train_dataset = DriveData("./dataset/cv/%s/train/%s_pos_train_f%d.fa" % (_species, _species, fold + 1),
+                              "./dataset/cv/%s/train/%s_neg_train_f%d.fa" % (_species, _species, fold + 1))
+    test_dataset = DriveData("./dataset/cv/%s/val/%s_pos_val_f%d.fa" % (_species, _species, fold + 1),
+                             "./dataset/cv/%s/val/%s_neg_val_f%d.fa" % (_species, _species, fold + 1))
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=1, num_workers=8, shuffle=True)
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=1, num_workers=8, shuffle=False)
     total_step = len(train_loader)
@@ -109,11 +105,12 @@ for _species in SPECIES:
           correct += (predicted == labels).sum().item()
           loss_total += criterion(outputs, labels).item()
 
-        wrtrst(WriteFile, perfeval(F.softmax(torch.stack(predictions), dim=1).cpu().numpy(), Y_test, verbose=1), fold, epoch)
-      
+        wrtrst(WriteFile, perfeval(F.softmax(torch.stack(predictions), dim=1).cpu().numpy(), Y_test, verbose=1), fold,
+               epoch)
+
       loss_list.append(loss_total / total)
       accuracy_list.append(float(correct) / total)
-                 
+
       _, ax1 = plt.subplots()
       ax2 = ax1.twinx()
       ax1.plot(loss_list)
@@ -123,10 +120,10 @@ for _species in SPECIES:
       ax2.set_ylabel("Validation accuracy")
       ax1.set_title("Validation accuracy and loss")
       ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
-      plt.savefig("./results/cv/accuracy_loss_variable_%s_%s.png" %(_species, fold), dpi=300)
+      plt.savefig("./results/cv/accuracy_loss_variable_%s_%s.png" % (_species, fold), dpi=300)
       plt.close()
 
-    torch.save(model.state_dict(), "./weights/cv/%s_f%d_variable.pt" % (_species,fold+1))
+    torch.save(model.state_dict(), "./weights/cv/%s_f%d_variable.pt" % (_species, fold + 1))
     model.eval()
     with torch.no_grad():
       predictions = []
@@ -138,8 +135,8 @@ for _species in SPECIES:
         predictions.extend(outputs.data)
         Y_test.extend(labels)
       rst.append(perfeval(F.softmax(torch.stack(predictions), dim=1).cpu().numpy(), Y_test, verbose=0))
-  
-  rst_avg = np.mean([f[:-1] for f in rst],axis=0)
+
+  rst_avg = np.mean([f[:-1] for f in rst], axis=0)
   print(rst_avg)
   wrtrst(WriteFile, rst_avg, 0, 0)
   WriteFile.close()

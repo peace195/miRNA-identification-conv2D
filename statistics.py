@@ -1,13 +1,12 @@
 import numpy as np
-from sklearn import metrics
-from os.path import exists
-from os import makedirs
 from Bio import SeqIO  ## fasta read
 import matplotlib
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-#statistics of dataset
+
+# statistics of dataset
 def import_seq(filename):
   seqs = []
   for record in SeqIO.parse(filename, "fasta"):
@@ -15,13 +14,14 @@ def import_seq(filename):
     seqs.append(a_seq)
   return seqs
 
+
 SPECIES = ["new", "human", "whole"]
 classes = ["pos", "neg"]
 seq_len = []
 
 for _species in SPECIES:
   for category in classes:
-    seqs = import_seq("./dataset/sequences/%s_%s.fa" % (_species,category))
+    seqs = import_seq("./dataset/sequences/%s_%s.fa" % (_species, category))
     for seq in seqs:
       seq_len.append(len(seq))
 
