@@ -22,8 +22,11 @@ An example: `export VIENNA_PATH="/Users/peace195/ViennaRNA/lib/python3.6/site-pa
 
 where:
 
-File | Description
+File / Folder | Description
 -----|------------
+dataset/ | `human`, `cross-species` and `new` RNA sequences
+results/ 	| running log of each epoch in testset
+weights/ | saved model parameters
 cv.py| 5-fold cross validation for `human` and `cross-species` dataset using fixed-sized inputs ConvNet architecture
 test.py | Train and test in `human` and `cross-species` dataset with fixed-sized inputs ConvNet architecture
 test_new.py| Train and test in `new` dataset with fixed-sized inputs ConvNet architecture
@@ -33,3 +36,5 @@ test_new_variable_size.py| Train and test in `new` dataset with variable-sized i
 utils.py| Read sequences, encode sequences and measurements
 ConvNet.py| Some ConvNet architectures such as Alexnet, Resnet, etc.
 statistics.py| Statistics of dataset
+
+
